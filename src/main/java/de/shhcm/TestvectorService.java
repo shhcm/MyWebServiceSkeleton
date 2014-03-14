@@ -7,6 +7,7 @@ import javax.ws.rs.core.MediaType;
 
 /**
  * Root resource (exposed at "myresource" path)
+ * TODO: WebService that returns test vectors.
  */
 @Path("myresource")
 public class TestvectorService {
