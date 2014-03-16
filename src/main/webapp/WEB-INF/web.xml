@@ -1,6 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" id="WebApp_ID" version="2.5">
   <display-name>de.shhcm</display-name>
+  
+  <!--
+    Provide a reference to a container-specific jndi name (jndi-name).
+    The resource-ref-name may be used in the java code of the application,
+    thus the real (container-specific) jndi name may change later,
+    without having to recompile the code. It is sufficient to update this
+    reference. (Real jndi name is not hard-wired into the code).
+   -->
+  <resource-ref>
+    <res-ref-name>log4j_config_file_path</res-ref-name>
+    <jndi-name>log4j_config_file_path</jndi-name>
+  </resource-ref>
+  
+  
   <servlet>
     <servlet-name>Jersey REST Service</servlet-name>
     <servlet-class>com.sun.jersey.spi.container.servlet.ServletContainer</servlet-class>
@@ -14,4 +28,5 @@
     <servlet-name>Jersey REST Service</servlet-name>
     <url-pattern>/rest/*</url-pattern>
   </servlet-mapping>
+  
 </web-app>

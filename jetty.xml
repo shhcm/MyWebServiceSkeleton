@@ -1,6 +1,19 @@
 <?xml version="1.0"?>
 <!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "http://www.eclipse.org/jetty/configure.dtd">
  
-<Configure id="Server" class="org.eclipse.jetty.server.Server">
+
     <!-- TODO: JNDI Configuration goes here! -->
+    
+<Configure id="Server" class="org.eclipse.jetty.server.Server">
+  <New id="cf" class="org.eclipse.jetty.plus.jndi.Resource">
+    <Arg><Ref refid="Server"/></Arg>
+    <Arg>log4j_config_file_path</Arg> <!-- Name -->
+    <Arg>
+        <New class="java.lang.String">
+            <Arg>/logging/log4j.properties</Arg> <!-- Value -->
+        </New>
+    </Arg>
+  </New>
 </Configure>
+
+
