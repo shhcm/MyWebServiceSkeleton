@@ -5,15 +5,22 @@
     <!-- TODO: JNDI Configuration goes here! -->
     
 <Configure id="Server" class="org.eclipse.jetty.server.Server">
-  <New id="cf" class="org.eclipse.jetty.plus.jndi.Resource">
-    <Arg><Ref refid="Server"/></Arg>
+  <New id="log4j" class="org.eclipse.jetty.plus.jndi.Resource">
+    <Arg><Ref refid="Server"/></Arg> <!-- Scope -->
     <Arg>log4j_config_file_path</Arg> <!-- Name -->
     <Arg>
         <New class="java.lang.String">
-            <Arg>/logging/log4j.properties</Arg> <!-- Value -->
+            <Arg>src/main/resources/log4j.properties</Arg> <!-- Value -->
+        </New>
+    </Arg>
+  </New>
+  <New id="spring" class="org.eclipse.jetty.plus.jndi.Resource">
+    <Arg><Ref refid="Server"/></Arg> <!-- Scope -->
+    <Arg>spring_xml_file_path</Arg> <!-- Name -->
+    <Arg>
+        <New class="java.lang.String">
+            <Arg>src/main/resources/spring.xml</Arg> <!-- Value -->
         </New>
     </Arg>
   </New>
 </Configure>
-
-

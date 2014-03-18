@@ -3,7 +3,7 @@
   <display-name>de.shhcm</display-name>
   
   <!--
-    Provide a reference to a container-specific jndi name (jndi-name).
+    Provide references to a container-specific jndi names (jndi-name).
     The resource-ref-name may be used in the java code of the application,
     thus the real (container-specific) jndi name may change later,
     without having to recompile the code. It is sufficient to update this
@@ -12,6 +12,10 @@
   <resource-ref>
     <res-ref-name>log4j_config_file_path</res-ref-name>
     <jndi-name>log4j_config_file_path</jndi-name>
+  </resource-ref>
+  <resource-ref>
+    <res-ref-name>spring_xml_file_path</res-ref-name>
+    <jndi-name>spring_xml_file_path</jndi-name>
   </resource-ref>
   
   
