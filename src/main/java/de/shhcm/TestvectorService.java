@@ -1,5 +1,10 @@
 package de.shhcm;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.Properties;
+
 import javax.annotation.PostConstruct;
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -13,6 +18,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.springframework.context.support.FileSystemXmlApplicationContext;
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
 
 import de.shhcm.beans.TestBean;
 
@@ -39,9 +46,11 @@ import de.shhcm.beans.TestBean;
  */
 @Path("myresource")
 public class TestvectorService {
+    
+    public static Logger logger = Logger.getLogger(TestvectorService.class);
 
     @PostConstruct
-    public void init() throws NamingException {
+    public void init() throws NamingException, FileNotFoundException, IOException {
         System.out.println("Initialized!");
         
         // Lookup JNDI resources. (path to spring.xml and log4j.properties)
@@ -49,7 +58,6 @@ public class TestvectorService {
         Context envContext = (Context) initialContext.lookup("java:comp/env");
         System.out.println("Got Context...");
         String pathToLog4jProperties = (String) envContext.lookup("log4j_config_file_path"); // TODO
-        System.out.println(pathToLog4jProperties);
         String pathToSpringXml = (String) envContext.lookup("spring_xml_file_path");
         
         // Get instance of FileSystemXmlApplicationContext, need to pass a URI here: file:///path
@@ -57,17 +65,24 @@ public class TestvectorService {
         TestBean testBean = (TestBean) fileSystemXmlApplicationContext.getBean("TestBean");
         System.out.println(testBean.getFoo());
         fileSystemXmlApplicationContext.close();
+        
+        // Read log4j properties
+        Properties props = new Properties();
+        props.load(new FileInputStream(pathToLog4jProperties));
+        PropertyConfigurator.configure(props);
     }
     
     @GET
     @Produces(MediaType.TEXT_PLAIN) // Client sends header "Accept: text/plain"
     public Response getItText() {
+        logger.info("GET received!");
         return Response.ok("Got it!").build();
     }
     
     @GET
     @Produces(MediaType.APPLICATION_XML) // Client sends header "Accept: application/xml"
     public Response getItXml() {
+        logger.info("GET received!");
         return Response.ok("<xml>Got it!</xml>").build();
     }
     
@@ -75,6 +90,7 @@ public class TestvectorService {
     @Produces(MediaType.APPLICATION_XML)
     @Consumes(MediaType.APPLICATION_XML) // Client sends Header "Content-Type: application/xml"
     public Response postItXml() {
+        logger.info("POST received!");
         return Response.ok("<xml>Got xml!</xml>").build();
     }
     
@@ -82,6 +98,7 @@ public class TestvectorService {
     @Produces(MediaType.APPLICATION_XML)
     @Consumes(MediaType.APPLICATION_JSON) // Client sends Header "Content-Type: application/json"
     public Response postItJson() {
+        logger.info("POST received!");
         return Response.ok("<xml>Got json!</xml>").build();
     }
 }
