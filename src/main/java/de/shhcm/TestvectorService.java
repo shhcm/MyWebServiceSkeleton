@@ -17,10 +17,14 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 
+import de.shhcm.beans.DependencyInjectedBean;
 import de.shhcm.beans.TestBean;
 
 /**
@@ -44,15 +48,17 @@ import de.shhcm.beans.TestBean;
  *  - Do the same restfully as GET request.
  *  - Implement an idempotent and all-or-noting strategy. 
  */
+@Component
 @Path("myresource")
 public class TestvectorService {
+    
+    @Autowired
+    private DependencyInjectedBean dependencyInjectedBean;
     
     public static Logger logger = Logger.getLogger(TestvectorService.class);
 
     @PostConstruct
     public void init() throws NamingException, FileNotFoundException, IOException {
-        System.out.println("Initialized!");
-        
         // Lookup JNDI resources. (path to spring.xml and log4j.properties)
         InitialContext initialContext = new InitialContext();
         Context envContext = (Context) initialContext.lookup("java:comp/env");
@@ -63,7 +69,7 @@ public class TestvectorService {
         // Get instance of FileSystemXmlApplicationContext, need to pass a URI here: file:///path
         FileSystemXmlApplicationContext fileSystemXmlApplicationContext = new FileSystemXmlApplicationContext(pathToSpringXml);
         TestBean testBean = (TestBean) fileSystemXmlApplicationContext.getBean("TestBean");
-        System.out.println(testBean.getFoo());
+        System.out.println("Bean loaded via FileSystemApplicationContext says " + testBean.getFoo());
         fileSystemXmlApplicationContext.close();
         
         // Read log4j properties
@@ -76,6 +82,7 @@ public class TestvectorService {
     @Produces(MediaType.TEXT_PLAIN) // Client sends header "Accept: text/plain"
     public Response getItText() {
         logger.info("GET received!");
+        System.out.println("Bean loaded via DI says " + dependencyInjectedBean.getBar());
         return Response.ok("Got it!").build();
     }
     
@@ -83,6 +90,7 @@ public class TestvectorService {
     @Produces(MediaType.APPLICATION_XML) // Client sends header "Accept: application/xml"
     public Response getItXml() {
         logger.info("GET received!");
+        System.out.println("Bean loaded via DI says " + dependencyInjectedBean.getBar());
         return Response.ok("<xml>Got it!</xml>").build();
     }
     

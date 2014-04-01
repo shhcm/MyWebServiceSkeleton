@@ -9,6 +9,20 @@
     without having to recompile the code. It is sufficient to update this
     reference. (Real jndi name is not hard-wired into the code).
    -->
+   <context-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>classpath:applicationContext.xml</param-value>
+    </context-param>
+ 
+    <listener>
+        <listener-class>
+            org.springframework.web.context.ContextLoaderListener
+        </listener-class>
+    </listener>
+    <listener>
+        <listener-class>de.shhcm.TestvectorServiceServletContext</listener-class>
+    </listener>
+   
   <resource-ref>
     <res-ref-name>log4j_config_file_path</res-ref-name>
     <jndi-name>log4j_config_file_path</jndi-name>
@@ -17,6 +31,7 @@
     <res-ref-name>spring_xml_file_path</res-ref-name>
     <jndi-name>spring_xml_file_path</jndi-name>
   </resource-ref>
+  
   
   
   <servlet>
