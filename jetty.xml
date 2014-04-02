@@ -10,6 +10,7 @@
     <Arg>log4j_config_file_path</Arg> <!-- Name -->
     <Arg>
         <New class="java.lang.String">
+            <!-- Set a path here that may be specific to deployment environment. -->
             <Arg>src/main/resources/log4j.properties</Arg> <!-- Value -->
         </New>
     </Arg>
@@ -19,6 +20,11 @@
     <Arg>spring_xml_file_path</Arg> <!-- Name -->
     <Arg>
         <New class="java.lang.String">
+            <!--
+                Set a path here that may be specific to deployment environment.
+                This allows to load different beans for test/production DB connections,
+                web service configurations/ credentials etc... 
+            -->
             <Arg>src/main/resources/spring.xml</Arg> <!-- Value -->
         </New>
     </Arg>
