@@ -6,8 +6,6 @@
     http://www.springframework.org/schema/context
     http://www.springframework.org/schema/context/spring-context-3.0.xsd">
  
-    <context:component-scan base-package="de.shhcm" />
-    <context:component-scan base-package="de.shhcm.beans" />
     <bean id="dependencyInjectedBean" class="de.shhcm.beans.DependencyInjectedBean"/>
- 
+    <bean class="de.shhcm.TestvectorService"/>
 </beans>

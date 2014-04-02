@@ -9,16 +9,17 @@
     without having to recompile the code. It is sufficient to update this
     reference. (Real jndi name is not hard-wired into the code).
    -->
-   <context-param>
-        <param-name>contextConfigLocation</param-name>
-        <param-value>classpath:applicationContext.xml</param-value>
-    </context-param>
- 
     <listener>
         <listener-class>
             org.springframework.web.context.ContextLoaderListener
         </listener-class>
     </listener>
+    
+    <context-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>classpath:applicationContext.xml</param-value>
+    </context-param>
+    
     <listener>
         <listener-class>de.shhcm.TestvectorServiceServletContext</listener-class>
     </listener>
@@ -33,7 +34,7 @@
   </resource-ref>
   
   
-  
+  <!--
   <servlet>
     <servlet-name>Jersey REST Service</servlet-name>
     <servlet-class>com.sun.jersey.spi.container.servlet.ServletContainer</servlet-class>
@@ -43,8 +44,18 @@
     </init-param>
     <load-on-startup>1</load-on-startup>
   </servlet>
+  -->
+  <servlet>
+        <servlet-name>Jersey/Spring REST Service</servlet-name>
+        <servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
+        <init-param>
+            <param-name>javax.ws.rs.Application</param-name>
+            <param-value>de.shhcm.TestvectorServiceApplication</param-value>
+        </init-param>
+        <load-on-startup>1</load-on-startup>
+  </servlet>
   <servlet-mapping>
-    <servlet-name>Jersey REST Service</servlet-name>
+    <servlet-name>Jersey/Spring REST Service</servlet-name>
     <url-pattern>/rest/*</url-pattern>
   </servlet-mapping>
   

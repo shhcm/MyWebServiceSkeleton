@@ -20,7 +20,6 @@ import javax.ws.rs.core.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 
@@ -48,8 +47,9 @@ import de.shhcm.beans.TestBean;
  *  - Do the same restfully as GET request.
  *  - Implement an idempotent and all-or-noting strategy. 
  */
-@Component
+
 @Path("myresource")
+@Component
 public class TestvectorService {
     
     @Autowired
@@ -57,13 +57,11 @@ public class TestvectorService {
     
     public static Logger logger = Logger.getLogger(TestvectorService.class);
 
-    @PostConstruct
     public void init() throws NamingException, FileNotFoundException, IOException {
         // Lookup JNDI resources. (path to spring.xml and log4j.properties)
         InitialContext initialContext = new InitialContext();
         Context envContext = (Context) initialContext.lookup("java:comp/env");
         System.out.println("Got Context...");
-        String pathToLog4jProperties = (String) envContext.lookup("log4j_config_file_path"); // TODO
         String pathToSpringXml = (String) envContext.lookup("spring_xml_file_path");
         
         // Get instance of FileSystemXmlApplicationContext, need to pass a URI here: file:///path
@@ -71,11 +69,6 @@ public class TestvectorService {
         TestBean testBean = (TestBean) fileSystemXmlApplicationContext.getBean("TestBean");
         System.out.println("Bean loaded via FileSystemApplicationContext says " + testBean.getFoo());
         fileSystemXmlApplicationContext.close();
-        
-        // Read log4j properties
-        Properties props = new Properties();
-        props.load(new FileInputStream(pathToLog4jProperties));
-        PropertyConfigurator.configure(props);
     }
     
     @GET
@@ -89,6 +82,11 @@ public class TestvectorService {
     @GET
     @Produces(MediaType.APPLICATION_XML) // Client sends header "Accept: application/xml"
     public Response getItXml() {
+        try {
+            init();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         logger.info("GET received!");
         System.out.println("Bean loaded via DI says " + dependencyInjectedBean.getBar());
         return Response.ok("<xml>Got it!</xml>").build();
