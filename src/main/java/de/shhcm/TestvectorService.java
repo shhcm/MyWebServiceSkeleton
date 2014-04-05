@@ -69,7 +69,7 @@ public class TestvectorService {
         //Improve: Do this using dependency injection.
         // Create Wrapper bean with singleton scope that gets injected into this class.
         try {
-            entityManagerFactory = Persistence.createEntityManagerFactory("testdb");
+            entityManagerFactory = Persistence.createEntityManagerFactory("de.shhcm.model"); // Pass the persistence unit name here.
         } catch(Exception e) {
             e.printStackTrace();
         }

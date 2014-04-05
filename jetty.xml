@@ -29,7 +29,7 @@
         </New>
     </Arg>
   </New>
-  <!-- Add a datasource here 
+  <!--
         Important: To run this via the run-jetty-run plugin, the
         postgres-9.3-1101-jdbc41.jar must be on the jetty classpath.
         (not just the webapp-classpath, as they are different!)
