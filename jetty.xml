@@ -29,4 +29,24 @@
         </New>
     </Arg>
   </New>
+  <!-- Add a datasource here 
+        Important: To run this via the run-jetty-run plugin, the
+        postgres-9.3-1101-jdbc41.jar must be on the jetty classpath.
+        (not just the webapp-classpath, as they are different!)
+        This must be configured in the run-jetty-run run configuration
+        for this plugin!
+  -->
+  <New id="myDataSource" class="org.eclipse.jetty.plus.jndi.Resource">
+     <Arg><Ref refid="Server"/></Arg> <!-- Scope -->
+     <Arg>myDataSource</Arg>
+     <Arg>
+        <New class="org.postgresql.ds.PGSimpleDataSource">
+           <Set name="User">testuser</Set>
+           <Set name="Password">testLogin</Set>
+           <Set name="DatabaseName">testdb</Set>
+           <Set name="ServerName">localhost</Set>
+           <Set name="PortNumber">5432</Set>
+        </New>
+     </Arg>
+  </New>
 </Configure>

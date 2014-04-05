@@ -1,14 +1,14 @@
 package de.shhcm;
 
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Properties;
 
-import javax.annotation.PostConstruct;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -21,7 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 import org.springframework.stereotype.Component;
 import org.apache.log4j.Logger;
-import org.apache.log4j.PropertyConfigurator;
+import org.hibernate.SessionFactory;
 
 import de.shhcm.beans.DependencyInjectedBean;
 import de.shhcm.beans.TestBean;
@@ -34,18 +34,13 @@ import de.shhcm.beans.TestBean;
  * -or-
  * 
  * Configuration for run-jetty-run eclipse plugin for jetty 9.0 (run configurations):
- * Show Advanced Options -> JNDI Support, Additional jetty.xml
- * 
- * TODO: WebService that returns test vectors.
+ *   Show Advanced Options -> JNDI Support, Additional jetty.xml
  *  
- *  - Allow to post a symmetric key (BASE64), block size, plain text (not longer than the block size), 
- *      all packaged as JSON or XML. Return the test vector in a JSON or XML format.
- *
- *  - Allow to post a symmetric key (BASE64), block size, a plain text (arbitrary length), an operating mode, 
- *      all packaged as JSON or XML. Return the test vector in a JSON or XMLformat.
- *  
- *  - Do the same restfully as GET request.
- *  - Implement an idempotent and all-or-noting strategy. 
+ *   Important: To run this via the run-jetty-run plugin, the
+ *   postgres-9.3-1101-jdbc41.jar must be on the jetty classpath.
+ *   (not just the webapp-classpath, as they are different!)
+ *   This must be configured in the run-jetty-run run configuration
+ *   for this plugin!
  */
 
 @Path("myresource")
@@ -54,6 +49,7 @@ public class TestvectorService {
     
     @Autowired
     private DependencyInjectedBean dependencyInjectedBean;
+    private EntityManagerFactory entityManagerFactory;
     
     public static Logger logger = Logger.getLogger(TestvectorService.class);
 
@@ -69,6 +65,14 @@ public class TestvectorService {
         TestBean testBean = (TestBean) fileSystemXmlApplicationContext.getBean("TestBean");
         System.out.println("Bean loaded via FileSystemApplicationContext says " + testBean.getFoo());
         fileSystemXmlApplicationContext.close();
+        
+        //Improve: Do this using dependency injection.
+        // Create Wrapper bean with singleton scope that gets injected into this class.
+        try {
+            entityManagerFactory = Persistence.createEntityManagerFactory("testdb");
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
     }
     
     @GET
@@ -89,6 +93,8 @@ public class TestvectorService {
         }
         logger.info("GET received!");
         System.out.println("Bean loaded via DI says " + dependencyInjectedBean.getBar());
+        System.out.println("Trying to get EntityManager instance...");
+        System.out.println("SessionFactory: " + entityManagerFactory.createEntityManager().toString());
         return Response.ok("<xml>Got it!</xml>").build();
     }
     
