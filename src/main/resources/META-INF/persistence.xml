@@ -4,12 +4,13 @@
         version="2.0">
     <persistence-unit name="de.shhcm.model"><!-- The package name for the annotated classes goes here. -->
       <provider>org.hibernate.ejb.HibernatePersistence</provider>
-      <jta-data-source>java:comp/env/myDataSource</jta-data-source> <!-- This data source must be defined via JNDI in jetty.xml -->
       <class>de.shhcm.model.Event</class> <!--Comment? -->
       <properties>
+        <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect"/>
+        <property name="connection.datasource" value="java:comp/env/myDataSource"/> <!-- Tell hibernate where to find a datasource via JNDI -->
         <property name="hibernate.show_sql" value="true"/>
         <property name="hibernate.format_sql" value="true"/>
-        <property name="hbm2ddl.auto" value="update"/>
+        <property name="hbm2ddl.auto" value="create"/>
       </properties>
     </persistence-unit>
 </persistence>

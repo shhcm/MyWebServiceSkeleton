@@ -27,13 +27,25 @@ public class Event {
         return id;
     }
     
+    public void setId(Long id) {
+        this.id = id;
+    }
+    
     public String getTitle() {
         return title;
+    }
+    
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "EVENT_DATE") // We need to specify the column name here explicitly, because date is a reserved keyword in most RDBMS.
     public Date getDate() {
         return date;
+    }
+    
+    public void setDate(Date date) {
+        this.date = date;
     }
 }

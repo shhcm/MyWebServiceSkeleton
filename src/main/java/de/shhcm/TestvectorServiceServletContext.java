@@ -39,14 +39,14 @@ public class TestvectorServiceServletContext implements ServletContextListener{
             Context envContext = (Context) initialContext.lookup("java:comp/env");
             System.out.println("Got Context...");
             String pathToLog4jProperties = (String) envContext.lookup("log4j_config_file_path"); // TODO
-            DataSource dataSource = (DataSource) envContext.lookup("myDataSource");
+            /*DataSource dataSource = (DataSource) envContext.lookup("myDataSource");
             try {
                 // Check if dataSource is OK.
                 System.out.println(dataSource.getConnection().getClientInfo());
             } catch (SQLException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
-            }
+            }*/
             // Read log4j properties
             Properties props = new Properties();
             props.load(new FileInputStream(pathToLog4jProperties));

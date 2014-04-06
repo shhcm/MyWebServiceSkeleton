@@ -2,6 +2,7 @@ package de.shhcm;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Date;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -25,6 +26,7 @@ import org.hibernate.SessionFactory;
 
 import de.shhcm.beans.DependencyInjectedBean;
 import de.shhcm.beans.TestBean;
+import de.shhcm.model.Event;
 
 /**
  * Testing:
@@ -94,7 +96,14 @@ public class TestvectorService {
         logger.info("GET received!");
         System.out.println("Bean loaded via DI says " + dependencyInjectedBean.getBar());
         System.out.println("Trying to get EntityManager instance...");
-        System.out.println("SessionFactory: " + entityManagerFactory.createEntityManager().toString());
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        
+        // TODO: Make this work!
+        /*Event event = new Event();
+        event.setDate( new Date(System.currentTimeMillis()));
+        event.setTitle("Received GET request!");
+        entityManager.persist(event);*/
+        System.out.println("Got entity manager: " + entityManager.toString());
         return Response.ok("<xml>Got it!</xml>").build();
     }
     
