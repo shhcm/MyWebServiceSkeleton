@@ -42,7 +42,7 @@
      <Arg>
         <New class="org.postgresql.ds.PGSimpleDataSource">
            <Set name="User">testuser</Set>
-           <Set name="Password">testLogin</Set>
+           <Set name="Password">testuserLogin</Set>
            <Set name="DatabaseName">testdb</Set>
            <Set name="ServerName">localhost</Set>
            <Set name="PortNumber">5432</Set>

@@ -3,14 +3,13 @@
         xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"
         version="2.0">
     <persistence-unit name="de.shhcm.model"><!-- The package name for the annotated classes goes here. -->
-      <provider>org.hibernate.ejb.HibernatePersistence</provider>
+      <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
       <class>de.shhcm.model.Event</class> <!--Comment? -->
       <properties>
-        <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect"/>
-        <property name="connection.datasource" value="java:comp/env/myDataSource"/> <!-- Tell hibernate where to find a datasource via JNDI -->
-        <property name="hibernate.show_sql" value="true"/>
-        <property name="hibernate.format_sql" value="true"/>
-        <property name="hbm2ddl.auto" value="create"/>
+        <property name="eclipselink.target-database" value="PostgreSQL"/>
+        <property name="javax.persistence.nonJtaDataSource" value="java:comp/env/myDataSource"/> <!-- Tell hibernate where to find a datasource via JNDI -->
+        <property name="eclipselink.ddl-generation" value="create-tables"/>
+        <property name="eclipselink.ddl-generation.output-mode" value="database" />
       </properties>
     </persistence-unit>
 </persistence>

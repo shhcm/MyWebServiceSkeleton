@@ -18,11 +18,11 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 import org.springframework.stereotype.Component;
 import org.apache.log4j.Logger;
-import org.hibernate.SessionFactory;
 
 import de.shhcm.beans.DependencyInjectedBean;
 import de.shhcm.beans.TestBean;
@@ -97,13 +97,18 @@ public class TestvectorService {
         System.out.println("Bean loaded via DI says " + dependencyInjectedBean.getBar());
         System.out.println("Trying to get EntityManager instance...");
         EntityManager entityManager = entityManagerFactory.createEntityManager();
+        System.out.println("Got entity manager: " + entityManager.toString());
+        // Begin Transaction and write a new Event to the DB.
+        entityManager.getTransaction().begin();
         
-        // TODO: Make this work!
-        /*Event event = new Event();
+        Event event = new Event();
         event.setDate( new Date(System.currentTimeMillis()));
         event.setTitle("Received GET request!");
-        entityManager.persist(event);*/
-        System.out.println("Got entity manager: " + entityManager.toString());
+        
+        entityManager.persist(event);
+        entityManager.getTransaction().commit();
+        entityManager.close();
+        
         return Response.ok("<xml>Got it!</xml>").build();
     }
     
