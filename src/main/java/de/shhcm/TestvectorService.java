@@ -43,6 +43,8 @@ import de.shhcm.model.Event;
  *   (not just the webapp-classpath, as they are different!)
  *   This must be configured in the run-jetty-run run configuration
  *   for this plugin!
+ *   
+ * Better Configuration: just use eclipse-ee's m2 with goal jetty:run!
  */
 
 @Path("myresource")

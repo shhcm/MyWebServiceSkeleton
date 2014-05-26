@@ -80,6 +80,8 @@
             <artifactId>jetty-maven-plugin</artifactId>
             <version>9.1.0.RC2</version>
             <configuration>
+                <!-- Speed up jetty startup with configuration in jetty-context.xml -->
+                <contextXml>${basedir}/src/main/webapp/WEB-INF/jetty-context.xml</contextXml>
                 <jettyXml>jetty.xml</jettyXml>
                 <httpConnector>
                     <port>8081</port>
