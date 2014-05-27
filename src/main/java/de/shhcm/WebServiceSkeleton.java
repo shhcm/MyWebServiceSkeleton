@@ -49,13 +49,13 @@ import de.shhcm.model.Event;
 
 @Path("myresource")
 @Component
-public class TestvectorService {
+public class WebServiceSkeleton {
     
     @Autowired
     private DependencyInjectedBean dependencyInjectedBean;
     private EntityManagerFactory entityManagerFactory;
     
-    public static Logger logger = Logger.getLogger(TestvectorService.class);
+    public static Logger logger = Logger.getLogger(WebServiceSkeleton.class);
 
     public void init() throws NamingException, FileNotFoundException, IOException {
         // Lookup JNDI resources. (path to spring.xml and log4j.properties)
@@ -86,6 +86,12 @@ public class TestvectorService {
         System.out.println("Bean loaded via DI says " + dependencyInjectedBean.getBar());
         return Response.ok("Got it!").build();
     }
+    
+    /**
+     * Writes an event object to the DB.
+     * curl --request GET -H 'Accept:application/xml' localhost:8081/rest/myresource.
+     * @return Response
+     */
     
     @GET
     @Produces(MediaType.APPLICATION_XML) // Client sends header "Accept: application/xml"

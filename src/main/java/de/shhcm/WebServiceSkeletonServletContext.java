@@ -22,7 +22,7 @@ import org.springframework.context.support.FileSystemXmlApplicationContext;
 import de.shhcm.beans.TestBean;
 import de.shhcm.mbeans.SayHello;
 
-public class TestvectorServiceServletContext implements ServletContextListener{
+public class WebServiceSkeletonServletContext implements ServletContextListener{
 
     @Override
     public void contextDestroyed(ServletContextEvent arg0) {

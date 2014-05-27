@@ -7,7 +7,7 @@
       <class>de.shhcm.model.Event</class> <!--Comment? -->
       <properties>
         <property name="eclipselink.target-database" value="PostgreSQL"/>
-        <property name="javax.persistence.nonJtaDataSource" value="java:comp/env/myDataSource"/> <!-- Tell hibernate where to find a datasource via JNDI -->
+        <property name="javax.persistence.nonJtaDataSource" value="java:comp/env/myDataSource"/> <!-- Tell EclipseLink where to find a datasource via JNDI -->
         <property name="eclipselink.ddl-generation" value="create-tables"/>
         <property name="eclipselink.ddl-generation.output-mode" value="database" />
       </properties>
