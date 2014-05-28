@@ -24,6 +24,7 @@
         <artifactId>spring-web</artifactId>
         <version>4.0.2.RELEASE</version>
     </dependency>
+    
     <dependency>
         <groupId>log4j</groupId>
         <artifactId>log4j</artifactId>
@@ -62,6 +63,7 @@
         <artifactId>slf4j-api</artifactId>
         <version>1.7.6</version>
     </dependency>
+    
  </dependencies>
   <build>
     <finalName>webservice-skeleton</finalName>
@@ -88,11 +90,27 @@
                 </httpConnector>
             </configuration>
             <dependencies>
-                <!-- Postgres jdbc driver. Should not be in the classpath of the webapp, but in the classpath of the maven jetty plugin. -->
+                <!--  These DB drivers and DataSource implementations should not be in the 
+                classpath of the webapp, but in the classpath of the maven jetty plugin.
+                See JNDI configuration in jetty.xml -->
+                
+                <!-- Postgres jdbc driver.-->
                 <dependency>
                     <groupId>org.postgresql</groupId>
                     <artifactId>postgresql</artifactId>
                     <version>9.3-1101-jdbc41</version>
+                </dependency>
+                <!-- Spring DataSource dependency for JNDI configuration. -->
+                <dependency>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring-jdbc</artifactId>
+                    <version>4.0.2.RELEASE</version>
+                </dependency>
+                <!-- H2 DB Driver -->
+                <dependency>
+                    <groupId>com.h2database</groupId>
+                    <artifactId>h2</artifactId>
+                    <version>1.4.178</version>
                 </dependency>
             </dependencies>
         </plugin>

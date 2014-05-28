@@ -10,6 +10,7 @@ import javax.naming.NamingException;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.persistence.Query;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -17,7 +18,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
@@ -115,9 +115,13 @@ public class WebServiceSkeleton {
         
         entityManager.persist(event);
         entityManager.getTransaction().commit();
+        
+        Query query=entityManager.createQuery("SELECT COUNT(e.id) FROM Event e");
+        Number count = (Number)query.getSingleResult();
+        
         entityManager.close();
         
-        return Response.ok("<xml>Got it!</xml>").build();
+        return Response.ok("<xml>Got it! " + count.intValue() + " events in DB.</xml>").build();
     }
     
     @POST

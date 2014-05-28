@@ -40,6 +40,13 @@
      <Arg><Ref refid="Server"/></Arg> <!-- Scope -->
      <Arg>myDataSource</Arg>
      <Arg>
+        <New class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+           <Set name="driverClassName">org.h2.Driver</Set>
+           <Set name="url">jdbc:h2:~/h2db_file</Set> <!-- Store the db in the users directory under h2db_file -->
+           <Set name="username">sa</Set>
+           <Set name="password"></Set>
+        </New>
+        <!-- Use with local postgres DB server:
         <New class="org.postgresql.ds.PGSimpleDataSource">
            <Set name="User">pgtestuser</Set>
            <Set name="Password">pgtestuserLogin</Set>
@@ -47,6 +54,7 @@
            <Set name="ServerName">localhost</Set>
            <Set name="PortNumber">5432</Set>
         </New>
+         -->
      </Arg>
   </New>
 </Configure>
