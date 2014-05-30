@@ -34,7 +34,7 @@ public class DBTest {
         properties.put(JTA_DATASOURCE, "");
         properties.put(NON_JTA_DATASOURCE, "");
         properties.put(JDBC_DRIVER, "org.h2.Driver");
-        properties.put(JDBC_URL, "jdbc:h2:~/h2db_tests_file");
+        properties.put(JDBC_URL, "jdbc:h2:mem:h2db_tests");
         properties.put(JDBC_USER, "sa");
         properties.put(JDBC_PASSWORD, "");
         properties.put(DDL_GENERATION, "drop-and-create-tables");
