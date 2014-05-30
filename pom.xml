@@ -63,6 +63,12 @@
         <artifactId>slf4j-api</artifactId>
         <version>1.7.6</version>
     </dependency>
+    <dependency>
+        <groupId>com.h2database</groupId>
+        <artifactId>h2</artifactId>
+        <version>1.4.178</version>
+        <scope>test</scope><!-- We just need this for test execution/unit testing persistence tier -->
+    </dependency>
     
  </dependencies>
   <build>

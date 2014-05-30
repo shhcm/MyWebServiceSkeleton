@@ -4,7 +4,7 @@
         version="2.0">
     <persistence-unit name="de.shhcm.model"><!-- The package name for the annotated classes goes here. -->
       <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
-      <class>de.shhcm.model.Event</class> <!--Comment? -->
+      <class>de.shhcm.model.Event</class>
       <properties>
         <property name="eclipselink.target-database" value="PostgreSQL"/>
         <property name="javax.persistence.nonJtaDataSource" value="java:comp/env/myDataSource"/> <!-- Tell EclipseLink where to find a datasource via JNDI -->
