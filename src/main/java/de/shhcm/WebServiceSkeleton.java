@@ -26,6 +26,8 @@ import org.apache.log4j.Logger;
 
 import de.shhcm.beans.DependencyInjectedBean;
 import de.shhcm.beans.TestBean;
+import de.shhcm.jaxb.EventCounter;
+import de.shhcm.jaxb.SerializableEvent;
 import de.shhcm.model.Event;
 
 /**
@@ -43,8 +45,11 @@ import de.shhcm.model.Event;
  *   (not just the webapp-classpath, as they are different!)
  *   This must be configured in the run-jetty-run run configuration
  *   for this plugin!
- *   
+ *
  * Better Configuration: just use eclipse-ee's m2 with goal jetty:run!
+ *
+ * TODO: Set up a correct DI container with spring.
+ * TODO: Add integration tests via maven fail safe plugin.
  */
 
 @Path("myresource")
@@ -81,10 +86,20 @@ public class WebServiceSkeleton {
     
     @GET
     @Produces(MediaType.TEXT_PLAIN) // Client sends header "Accept: text/plain"
-    public Response getItText() {
+    public Response getText() {
         logger.info("GET received!");
         System.out.println("Bean loaded via DI says " + dependencyInjectedBean.getBar());
-        return Response.ok("Got it!").build();
+        return Response.ok("Got text!").build();
+    }
+    
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public SerializableEvent getEventAsJson() {
+        SerializableEvent serializableEvent = new SerializableEvent();
+        serializableEvent.setTitle("JSON representation of an event.");
+        serializableEvent.setEventCounter(new EventCounter());
+        serializableEvent.getEventCounter().setCount(0);
+        return serializableEvent;
     }
     
     /**
@@ -95,7 +110,7 @@ public class WebServiceSkeleton {
     
     @GET
     @Produces(MediaType.APPLICATION_XML) // Client sends header "Accept: application/xml"
-    public Response getItXml() {
+    public SerializableEvent getEventAsXml() {
         try {
             init();
         } catch (Exception e) {
@@ -111,7 +126,7 @@ public class WebServiceSkeleton {
         
         Event event = new Event();
         event.setDate( new Date(System.currentTimeMillis()));
-        event.setTitle("Received GET request!");
+        event.setTitle("GET request");
         
         entityManager.persist(event);
         entityManager.getTransaction().commit();
@@ -121,13 +136,17 @@ public class WebServiceSkeleton {
         
         entityManager.close();
         
-        return Response.ok("<xml>Got it! " + count.intValue() + " events in DB.</xml>").build();
+        SerializableEvent serializableEvent = new SerializableEvent();
+        serializableEvent.setTitle(event.getTitle());
+        serializableEvent.setEventCounter(new EventCounter());
+        serializableEvent.getEventCounter().setCount(count.intValue());
+        return serializableEvent;
     }
     
     @POST
     @Produces(MediaType.APPLICATION_XML)
     @Consumes(MediaType.APPLICATION_XML) // Client sends Header "Content-Type: application/xml"
-    public Response postItXml() {
+    public Response postXml() {
         logger.info("POST received!");
         return Response.ok("<xml>Got xml!</xml>").build();
     }
@@ -135,7 +154,7 @@ public class WebServiceSkeleton {
     @POST
     @Produces(MediaType.APPLICATION_XML)
     @Consumes(MediaType.APPLICATION_JSON) // Client sends Header "Content-Type: application/json"
-    public Response postItJson() {
+    public Response postJson() {
         logger.info("POST received!");
         return Response.ok("<xml>Got json!</xml>").build();
     }

@@ -1,10 +1,8 @@
 package de.shhcm;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
-import java.sql.SQLException;
 import java.util.Properties;
 
 import javax.management.MBeanServer;
@@ -14,12 +12,7 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
-import javax.sql.DataSource;
-
 import org.apache.log4j.PropertyConfigurator;
-import org.springframework.context.support.FileSystemXmlApplicationContext;
-
-import de.shhcm.beans.TestBean;
 import de.shhcm.mbeans.SayHello;
 
 public class WebServiceSkeletonServletContext implements ServletContextListener{
