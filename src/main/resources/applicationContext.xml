@@ -5,7 +5,7 @@
     http://www.springframework.org/schema/beans/spring-beans-3.0.xsd 
     http://www.springframework.org/schema/context
     http://www.springframework.org/schema/context/spring-context-3.0.xsd">
- 
-    <bean id="dependencyInjectedBean" class="de.shhcm.beans.DependencyInjectedBean"/>
+    <!-- See in web.xml -->
+    <bean id="dependencyInjectedDao" class="de.shhcm.dao.DependencyInjectedDao"/>
     <bean class="de.shhcm.WebServiceSkeleton"/>
 </beans>

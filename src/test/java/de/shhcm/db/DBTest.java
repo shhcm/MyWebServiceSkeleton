@@ -39,6 +39,7 @@ public class DBTest {
         properties.put(JDBC_PASSWORD, "");
         properties.put(DDL_GENERATION, "drop-and-create-tables");
         
+        // TODO: Test the DAO here.
         try {
             entityManagerFactory = Persistence.createEntityManagerFactory("de.shhcm.model", properties); // Pass the persistence unit name here.
         } catch(Exception e) {

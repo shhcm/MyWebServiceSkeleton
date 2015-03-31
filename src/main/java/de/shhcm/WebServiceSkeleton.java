@@ -7,10 +7,6 @@ import java.util.Date;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-import javax.persistence.Query;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -24,8 +20,8 @@ import org.springframework.context.support.FileSystemXmlApplicationContext;
 import org.springframework.stereotype.Component;
 import org.apache.log4j.Logger;
 
-import de.shhcm.beans.DependencyInjectedBean;
-import de.shhcm.beans.TestBean;
+import de.shhcm.beans.SpringXmlBean;
+import de.shhcm.dao.DependencyInjectedDao;
 import de.shhcm.jaxb.EventCounter;
 import de.shhcm.jaxb.SerializableEvent;
 import de.shhcm.model.Event;
@@ -48,8 +44,8 @@ import de.shhcm.model.Event;
  *
  * Better Configuration: just use eclipse-ee's m2 with goal jetty:run!
  *
- * TODO: Set up a correct DI container with spring.
  * TODO: Add integration tests via maven fail safe plugin.
+ * TODO: Check whether we can use the applicationContext.xml to set up DI wiring.
  */
 
 @Path("myresource")
@@ -57,12 +53,12 @@ import de.shhcm.model.Event;
 public class WebServiceSkeleton {
     
     @Autowired
-    private DependencyInjectedBean dependencyInjectedBean;
-    private EntityManagerFactory entityManagerFactory;
+    private DependencyInjectedDao dependencyInjectedDao;
+    private SpringXmlBean springXmlBean;
     
     public static Logger logger = Logger.getLogger(WebServiceSkeleton.class);
 
-    public void init() throws NamingException, FileNotFoundException, IOException {
+    private void init() throws NamingException, FileNotFoundException, IOException {
         // Lookup JNDI resources. (path to spring.xml and log4j.properties)
         InitialContext initialContext = new InitialContext();
         Context envContext = (Context) initialContext.lookup("java:comp/env");
@@ -70,31 +66,26 @@ public class WebServiceSkeleton {
         String pathToSpringXml = (String) envContext.lookup("spring_xml_file_path");
         
         // Get instance of FileSystemXmlApplicationContext, need to pass a URI here: file:///path
+        // As the jersey-spring3 module does not support Spring XML configuration,
+        // we may want to load some classes from a given spring xml programmatically like this.
         FileSystemXmlApplicationContext fileSystemXmlApplicationContext = new FileSystemXmlApplicationContext(pathToSpringXml);
-        TestBean testBean = (TestBean) fileSystemXmlApplicationContext.getBean("TestBean");
-        System.out.println("Bean loaded via FileSystemApplicationContext says " + testBean.getFoo());
+        springXmlBean = (SpringXmlBean) fileSystemXmlApplicationContext.getBean("TestBean");
+        System.out.println("Bean loaded via FileSystemApplicationContext says " + springXmlBean.getFoo());
         fileSystemXmlApplicationContext.close();
-        
-        //Improve: Do this using dependency injection.
-        // Create Wrapper bean with singleton scope that gets injected into this class.
-        try {
-            entityManagerFactory = Persistence.createEntityManagerFactory("de.shhcm.model"); // Pass the persistence unit name here.
-        } catch(Exception e) {
-            e.printStackTrace();
-        }
     }
     
     @GET
     @Produces(MediaType.TEXT_PLAIN) // Client sends header "Accept: text/plain"
     public Response getText() {
         logger.info("GET received!");
-        System.out.println("Bean loaded via DI says " + dependencyInjectedBean.getBar());
+        System.out.println("Bean loaded via DI says " + dependencyInjectedDao.getBar());
         return Response.ok("Got text!").build();
     }
     
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public SerializableEvent getEventAsJson() {
+        // Return a JSON DTO.
         SerializableEvent serializableEvent = new SerializableEvent();
         serializableEvent.setTitle("JSON representation of an event.");
         serializableEvent.setEventCounter(new EventCounter());
@@ -117,29 +108,21 @@ public class WebServiceSkeleton {
             e.printStackTrace();
         }
         logger.info("GET received!");
-        System.out.println("Bean loaded via DI says " + dependencyInjectedBean.getBar());
-        System.out.println("Trying to get EntityManager instance...");
-        EntityManager entityManager = entityManagerFactory.createEntityManager();
-        System.out.println("Got entity manager: " + entityManager.toString());
-        // Begin Transaction and write a new Event to the DB.
-        entityManager.getTransaction().begin();
+        System.out.println("Bean loaded via DI says " + dependencyInjectedDao.getBar());
         
+        // Add a new event to the DB.
         Event event = new Event();
         event.setDate( new Date(System.currentTimeMillis()));
         event.setTitle("GET request");
         
-        entityManager.persist(event);
-        entityManager.getTransaction().commit();
+        dependencyInjectedDao.saveEvent(event);
+        int eventCount = dependencyInjectedDao.countEvents();
         
-        Query query=entityManager.createQuery("SELECT COUNT(e.id) FROM Event e");
-        Number count = (Number)query.getSingleResult();
-        
-        entityManager.close();
-        
+        // Return an XML DTO.
         SerializableEvent serializableEvent = new SerializableEvent();
         serializableEvent.setTitle(event.getTitle());
         serializableEvent.setEventCounter(new EventCounter());
-        serializableEvent.getEventCounter().setCount(count.intValue());
+        serializableEvent.getEventCounter().setCount(eventCount);
         return serializableEvent;
     }
     

@@ -1,6 +1,6 @@
 package de.shhcm.beans;
 
-public class TestBean {
+public class SpringXmlBean {
     private String foo;
 
     public String getFoo() {
