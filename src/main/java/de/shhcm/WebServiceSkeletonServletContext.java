@@ -28,18 +28,11 @@ public class WebServiceSkeletonServletContext implements ServletContextListener{
         
         try {
             // Lookup JNDI resources. (path to spring.xml and log4j.properties)
+            // For usage of datasource via JNDI, see persistence.xml.
             InitialContext initialContext = new InitialContext();
             Context envContext = (Context) initialContext.lookup("java:comp/env");
             System.out.println("Got Context...");
             String pathToLog4jProperties = (String) envContext.lookup("log4j_config_file_path"); // TODO
-            /*DataSource dataSource = (DataSource) envContext.lookup("myDataSource");
-            try {
-                // Check if dataSource is OK.
-                System.out.println(dataSource.getConnection().getClientInfo());
-            } catch (SQLException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }*/
             // Read log4j properties
             Properties props = new Properties();
             props.load(new FileInputStream(pathToLog4jProperties));

@@ -2,7 +2,7 @@
 <!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "http://www.eclipse.org/jetty/configure.dtd">
  
 
-    <!-- TODO: JNDI Configuration goes here! -->
+    <!-- JNDI parameter go here! -->
     
 <Configure id="Server" class="org.eclipse.jetty.server.Server">
   <New id="log4j" class="org.eclipse.jetty.plus.jndi.Resource">

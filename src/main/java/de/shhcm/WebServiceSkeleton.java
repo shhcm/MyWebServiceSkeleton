@@ -46,6 +46,8 @@ import de.shhcm.model.Event;
  *
  * TODO: Add integration tests via maven fail safe plugin.
  * TODO: Check whether we can use the applicationContext.xml to set up DI wiring.
+ *      According to https://jersey.java.net/nonav/documentation/latest/spring.html
+ *      only wiring via spring annotations is supported.
  */
 
 @Path("myresource")

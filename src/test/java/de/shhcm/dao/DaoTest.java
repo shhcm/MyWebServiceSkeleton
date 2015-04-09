@@ -1,4 +1,4 @@
-package de.shhcm.db;
+package de.shhcm.dao;
 import static org.junit.Assert.*;
 import static org.eclipse.persistence.config.PersistenceUnitProperties.*;
 
@@ -6,25 +6,21 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
-import javax.persistence.Query;
 import javax.persistence.spi.PersistenceUnitTransactionType;
 
-import org.eclipse.persistence.config.PersistenceUnitProperties;
-import org.junit.After; 
+import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import de.shhcm.dao.DependencyInjectedDao;
 import de.shhcm.model.Event;
 
-public class DBTest {
+public class DaoTest {
     
-    private EntityManager entityManager;
-    private static EntityManagerFactory entityManagerFactory;
+    private static DependencyInjectedDao dao;
     
     @BeforeClass
     public static void setUpBeforeClass() {
@@ -39,9 +35,8 @@ public class DBTest {
         properties.put(JDBC_PASSWORD, "");
         properties.put(DDL_GENERATION, "drop-and-create-tables");
         
-        // TODO: Test the DAO here.
         try {
-            entityManagerFactory = Persistence.createEntityManagerFactory("de.shhcm.model", properties); // Pass the persistence unit name here.
+            DependencyInjectedDao.entityManagerFactory = Persistence.createEntityManagerFactory("de.shhcm.model", properties); // Pass the persistence unit name here.
         } catch(Exception e) {
             e.printStackTrace();
         }
@@ -49,41 +44,42 @@ public class DBTest {
     
     @Before
     public void setUp() {
-        // If the DB should be empty before each test, this has to be implemented here!
-        try {
-            entityManager = entityManagerFactory.createEntityManager();
-        } catch(Exception e) {
-            e.printStackTrace();
-        }
+        dao = new DependencyInjectedDao();
+        // Load fixtures.
     }
     
     @After
     public void tearDown() {
-        entityManager.close();
+        // Clean up.
     }
     
     @AfterClass
     public static void tearDownAfterClass() {
-        entityManagerFactory.close();
+        // Clean up.
     }
     
     @Test
     public void canWriteToDb() {
         // Given
-        entityManager.getTransaction().begin();
-        
         Event event = new Event();
         event.setDate( new Date(System.currentTimeMillis()));
-        event.setTitle("Received GET request!");
+        event.setTitle("Test event.");
         
         // When 
-        entityManager.persist(event);
-        entityManager.getTransaction().commit();
-        
-        Query query=entityManager.createQuery("SELECT COUNT(e.id) FROM Event e");
-        Number count = (Number)query.getSingleResult();
+        dao.saveEvent(event);
+        int count = dao.countEvents();
         
         // Then
-        assertEquals(1,count.intValue());
+        assertEquals(1, count);
+    }
+    
+    @Test
+    public void dbIsInitiallyEmpty() {
+        // Given.
+        int count = -1;
+        // When.
+        count = dao.countEvents();
+        // Then.
+        assertEquals(0, count);
     }
 }

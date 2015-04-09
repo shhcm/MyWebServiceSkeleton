@@ -12,7 +12,7 @@ import de.shhcm.model.Event;
 @Component
 public class DependencyInjectedDao implements IDao{
     private String bar = "foo";
-    private static EntityManagerFactory entityManagerFactory;
+    protected static EntityManagerFactory entityManagerFactory;
     
     static {
         try {
