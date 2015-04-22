@@ -32,7 +32,7 @@ public class WebServiceSkeletonServletContext implements ServletContextListener{
             InitialContext initialContext = new InitialContext();
             Context envContext = (Context) initialContext.lookup("java:comp/env");
             System.out.println("Got Context...");
-            String pathToLog4jProperties = (String) envContext.lookup("log4j_config_file_path"); // TODO
+            String pathToLog4jProperties = (String) envContext.lookup("log4j_config_file_path");
             // Read log4j properties
             Properties props = new Properties();
             props.load(new FileInputStream(pathToLog4jProperties));
@@ -47,9 +47,9 @@ public class WebServiceSkeletonServletContext implements ServletContextListener{
         
         try {
             // Create JMX agent.
-            MBeanServer mbs = ManagementFactory.getPlatformMBeanServer(); 
-            ObjectName name = new ObjectName("de.shhcm.mbeans:type=SayHello"); 
-            SayHello mbean = new SayHello(); 
+            MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
+            ObjectName name = new ObjectName("de.shhcm.mbeans:type=SayHello");
+            SayHello mbean = new SayHello();
             mbs.registerMBean(mbean, name);
         } catch(Exception e) {
             System.out.println("Error creating jmx agent/ mbean server.");
