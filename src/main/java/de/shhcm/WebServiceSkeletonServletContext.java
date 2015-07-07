@@ -12,20 +12,23 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
+
 import org.apache.log4j.PropertyConfigurator;
+import org.springframework.context.support.FileSystemXmlApplicationContext;
+
 import de.shhcm.mbeans.SayHello;
 
 public class WebServiceSkeletonServletContext implements ServletContextListener{
 
     @Override
-    public void contextDestroyed(ServletContextEvent arg0) {
+    public void contextDestroyed(ServletContextEvent servletContextEvent) {
         System.out.println("contextDestroyed() called.");
     }
 
     @Override
-    public void contextInitialized(ServletContextEvent arg0) {
+    public void contextInitialized(ServletContextEvent servletContextEvent) {
         System.out.println("contextInitialized() called.");
-        
+        FileSystemXmlApplicationContext xmlApplicationContext;
         try {
             // Lookup JNDI resources. (path to spring.xml and log4j.properties)
             // For usage of datasource via JNDI, see persistence.xml.
@@ -37,6 +40,10 @@ public class WebServiceSkeletonServletContext implements ServletContextListener{
             Properties props = new Properties();
             props.load(new FileInputStream(pathToLog4jProperties));
             PropertyConfigurator.configure(props);
+            
+            String pathToSpringXml = (String) envContext.lookup("spring_xml_file_path");
+            xmlApplicationContext = new FileSystemXmlApplicationContext(pathToSpringXml);
+            
         } catch(NamingException e) {
             System.out.println("Cannot retrieve JNDI resources...");
             throw new RuntimeException(e);
@@ -45,6 +52,13 @@ public class WebServiceSkeletonServletContext implements ServletContextListener{
             throw new RuntimeException(e);
         }
         
+        tryCreateMBeanServer();
+        servletContextEvent.getServletContext().setAttribute(
+                "fileSystemXmlApplicationContext",
+                xmlApplicationContext);
+    }
+
+    public void tryCreateMBeanServer() {
         try {
             // Create JMX agent.
             MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();

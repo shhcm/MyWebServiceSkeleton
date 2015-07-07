@@ -2,13 +2,7 @@
 <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" id="WebApp_ID" version="2.5">
   <display-name>de.shhcm</display-name>
   
-  <!--
-    Provide references to a container-specific jndi names (jndi-name).
-    The resource-ref-name may be used in the java code of the application,
-    thus the real (container-specific) jndi name may change later,
-    without having to recompile the code. It is sufficient to update this
-    reference. (Real jndi name is not hard-wired into the code).
-   -->
+  
     <listener>
         <listener-class>
             org.springframework.web.context.ContextLoaderListener
@@ -23,7 +17,13 @@
     <listener>
         <listener-class>de.shhcm.WebServiceSkeletonServletContext</listener-class>
     </listener>
-   
+   <!--
+    Provide references to a container-specific jndi names (jndi-name).
+    The resource-ref-name may be used in the java code of the application,
+    thus the real (container-specific) jndi name may change later,
+    without having to recompile the code. It is sufficient to update this
+    reference. (Real jndi name is not hard-wired into the code).
+   -->
   <resource-ref>
     <res-ref-name>log4j_config_file_path</res-ref-name>
     <jndi-name>log4j_config_file_path</jndi-name>

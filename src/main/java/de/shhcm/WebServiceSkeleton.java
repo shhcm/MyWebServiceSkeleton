@@ -1,12 +1,8 @@
 package de.shhcm;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.Date;
 
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
+import javax.servlet.ServletContext;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -59,26 +55,31 @@ public class WebServiceSkeleton {
     private SpringXmlBean springXmlBean;
     
     public static Logger logger = Logger.getLogger(WebServiceSkeleton.class);
-
-    private void init() throws NamingException, FileNotFoundException, IOException {
-        // Lookup JNDI resources. (path to spring.xml and log4j.properties)
-        InitialContext initialContext = new InitialContext();
-        Context envContext = (Context) initialContext.lookup("java:comp/env");
-        System.out.println("Got Context...");
-        String pathToSpringXml = (String) envContext.lookup("spring_xml_file_path");
-        
-        // Get instance of FileSystemXmlApplicationContext, need to pass a URI here: file:///path
-        // As the jersey-spring3 module does not support Spring XML configuration,
-        // we may want to load some classes from a given spring xml programmatically like this.
-        FileSystemXmlApplicationContext fileSystemXmlApplicationContext = new FileSystemXmlApplicationContext(pathToSpringXml);
-        springXmlBean = (SpringXmlBean) fileSystemXmlApplicationContext.getBean("TestBean");
-        System.out.println("Bean loaded via FileSystemApplicationContext says " + springXmlBean.getFoo());
-        fileSystemXmlApplicationContext.close();
+    
+    @javax.ws.rs.core.Context
+    ServletContext servletContext;
+    
+    
+    private void init() {
+        // JNDI lookup of path to spring.xml is done only when once (when the servlet
+        // is initalized) in ServletContextListener.
+        try {
+            FileSystemXmlApplicationContext fileSystemXmlApplicationContext =
+                    (FileSystemXmlApplicationContext)
+                    servletContext.getAttribute("fileSystemXmlApplicationContext");
+            springXmlBean =  (SpringXmlBean)fileSystemXmlApplicationContext.getBean("TestBean");
+            String message = "Bean loaded via FileSystemXmlApplicationContext says: " + springXmlBean.getFoo();
+            logger.info(message);
+            System.out.println(message);
+        } catch(Exception e) {
+            throw new RuntimeException(e);
+        }
     }
     
     @GET
     @Produces(MediaType.TEXT_PLAIN) // Client sends header "Accept: text/plain"
     public Response getText() {
+        init();
         logger.info("GET received!");
         System.out.println("Bean loaded via DI says " + dependencyInjectedDao.getBar());
         return Response.ok("Got text!").build();
@@ -87,6 +88,7 @@ public class WebServiceSkeleton {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public SerializableEvent getEventAsJson() {
+        init();
         // Return a JSON DTO.
         SerializableEvent serializableEvent = new SerializableEvent();
         serializableEvent.setTitle("JSON representation of an event.");
@@ -104,12 +106,8 @@ public class WebServiceSkeleton {
     @GET
     @Produces(MediaType.APPLICATION_XML) // Client sends header "Accept: application/xml"
     public SerializableEvent getEventAsXml() {
-        try {
-            init();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
         logger.info("GET received!");
+        init();
         System.out.println("Bean loaded via DI says " + dependencyInjectedDao.getBar());
         
         // Add a new event to the DB.
@@ -133,6 +131,7 @@ public class WebServiceSkeleton {
     @Consumes(MediaType.APPLICATION_XML) // Client sends Header "Content-Type: application/xml"
     public Response postXml() {
         logger.info("POST received!");
+        init();
         return Response.ok("<xml>Got xml!</xml>").build();
     }
     
@@ -140,6 +139,7 @@ public class WebServiceSkeleton {
     @Produces(MediaType.APPLICATION_XML)
     @Consumes(MediaType.APPLICATION_JSON) // Client sends Header "Content-Type: application/json"
     public Response postJson() {
+        init();
         logger.info("POST received!");
         return Response.ok("<xml>Got json!</xml>").build();
     }
