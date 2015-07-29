@@ -64,7 +64,11 @@ public class WebServiceSkeletonServletContext implements ServletContextListener{
             MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
             ObjectName name = new ObjectName("de.shhcm.mbeans:type=SayHello");
             SayHello mbean = new SayHello();
-            mbs.registerMBean(mbean, name);
+            // Not checking for the registered object name pevents hot deployment
+            // as this bean is already registered and throws an exception (on jetty restart).
+            if(!mbs.isRegistered(name)) {
+                mbs.registerMBean(mbean, name);
+            }
         } catch(Exception e) {
             System.out.println("Error creating jmx agent/ mbean server.");
             throw new RuntimeException(e);

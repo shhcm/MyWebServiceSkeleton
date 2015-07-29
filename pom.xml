@@ -33,7 +33,12 @@
     <dependency>
       <groupId>org.glassfish.jersey.containers</groupId>
       <artifactId>jersey-container-servlet</artifactId>
-      <version>2.7</version>
+      <version>2.19</version>
+    </dependency>
+    <dependency>
+      <groupId>org.glassfish.hk2</groupId>
+      <artifactId>hk2</artifactId>
+      <version>2.3.0</version>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
@@ -43,20 +48,20 @@
     </dependency>
     <dependency>
       <groupId>javax.servlet</groupId>
-      <artifactId>servlet-api</artifactId>
-      <version>2.5</version>
+      <artifactId>javax.servlet-api</artifactId>
+      <version>3.1.0</version>
     </dependency>
     <!-- Works also with spring4. -->
     <dependency>
       <groupId>org.glassfish.jersey.ext</groupId>
       <artifactId>jersey-spring3</artifactId>
-      <version>2.7</version>
+      <version>2.19</version>
     </dependency>
 
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
       <artifactId>org.eclipse.persistence.jpa</artifactId>
-      <version>2.5.2-M1</version>
+      <version>2.6.0</version>
     </dependency>
 
     <dependency>
@@ -76,7 +81,8 @@
       <artifactId>jaxb-api</artifactId>
       <version>2.2.12</version>
     </dependency>
-    <!-- Required to automatically transform objects to JSON, used in an HTTP response. -->
+    <!-- Required to automatically transform objects to JSON, used in an
+      HTTP response. -->
     <dependency>
       <groupId>com.owlike</groupId>
       <artifactId>genson</artifactId>
@@ -106,6 +112,8 @@
           <httpConnector>
             <port>8081</port>
           </httpConnector>
+          <scanIntervalSeconds>2</scanIntervalSeconds>
+          <contextPath>/</contextPath>
         </configuration>
         <dependencies>
           <!-- These DB drivers and DataSource implementations should not
